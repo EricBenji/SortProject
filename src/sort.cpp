@@ -1,21 +1,36 @@
+/* sort.cpp - Contains implementations of a variety
+ *     of sorting algorithms to sort a vector of integers.
+ * Author: Eric Benjamin
+ * URL: www.github.com/EricBenji
+ * Date: 5/23/ 2018
+ */
+
 #include "sort.h"
 
-int time_out = ~(1 << 31);
-bool over_time = false;
+// TODO
+// int time_out = ~(1 << 31);
+// bool over_time = false;
 
+// Helper function to test a sorting algorithm when it's done running
 bool isSorted(std::vector<int> * data){
     for(int i = 0; i < data->size() - 1; i++)
         if (data->at(i) > data->at(i+1)) {
-            //for(int j = 0; j < data->size(); j++) std::cout << data->at(j) << " " << std::endl;
+            for(int j = 0; j < data->size(); j++)
+                std::cout << data->at(j) << " " << std::endl;
             return false;
         }
     return true;
 }
 
-int set_time_out(int ms){
-    time_out = ms;
-}
+// TODO 
+//int set_time_out(int ms){
+//    time_out = ms;
+//}
 
+// Helper function for Mergesort algorithm - sorts a subarray of a vector
+// data - vector to be sorted
+// begin - first index of subarray to be sorted
+// size - size of subarray to be sorted
 void merge(std::vector<int> * data, int begin, int size){
     if (size == 1) return;
     int half = size / 2;
@@ -44,12 +59,17 @@ void merge(std::vector<int> * data, int begin, int size){
     delete temp;
 }
 
+// Mergesort algorithm -- O(nlogn)
+// Split the vector in half, recursively sort the left and right side
 void merge(std::vector<int> * data){
-    over_time = false;
     merge(data,0,data->size());
     if (!isSorted(data)) std::cout << "FAIL MERGE" << std::endl;
 }
 
+// Helper function for quicksort algorithm - sorts a subarray of a vector
+// data - vector to be sorted
+// begin - first index of subarray to be sorted
+// size - size of subarray to be sorted
 void quick(std::vector<int> * data, int begin, int size){
     if(size == 0) return;
     if(size == 1) return;
@@ -82,12 +102,17 @@ void quick(std::vector<int> * data, int begin, int size){
     quick(data, low, begin + size - low);
 }
 
+// Quicksort algorithm - O(nlogn)
+// Randomly choose a "pivot" from the vector and place all values
+// smaller than the pivot to the left of all values larger than the pivot.
+// Recursively sort the left and right sides until sorted.
 void quick(std::vector<int> * data){
-    over_time = false;
     quick(data,0,data->size());
     if (!isSorted(data)) std::cout << "FAIL QUICK" << std::endl;
 }
 
+// Helper function for Radixsort
+// Returns number of decimal digits in integer in
 int num_digits(int in){
     int toReturn = 0;
     while( in != 0){
@@ -97,6 +122,11 @@ int num_digits(int in){
     return toReturn;
 }
 
+// LSD Radix sort algorithm -- O(kn)
+// This algorithm makes as many passes as there are digits in the smallest
+// element. This is possible because the data type is discrete. The data 
+// is put into ten groups based on their digits, beginning with the least 
+// significant digit and increasing with each pass.
 void radix(std::vector<int> * data){
     if(data->size() == 0) return;
     int upper_bound = data->at(0);
@@ -122,6 +152,11 @@ void radix(std::vector<int> * data){
     if (!isSorted(data)) std::cout << "FAIL RADIX" << std::endl;
 }
 
+// Bubble sort -- O(n^2)
+// Ascend through the data, swapping each element with the element above it
+// if it is larger than the one above it. Continue making passes this way 
+// until the data is sorted. 
+// Sidenote - Never use bubble sort on large data sets please
 void bubble(std::vector<int> * data){
     bool sorted = false;
     int max = data->size();
@@ -140,6 +175,10 @@ void bubble(std::vector<int> * data){
     if (!isSorted(data)) std::cout << "FAIL BUBBLE" << std::endl;
 }
 
+// Cocktail Shaker sort -- O(n^2)
+// Ascend through the data, making swaps as bubble sort would do. Then 
+// descend back through the data, making swaps in a similar fashion. 
+// Negilibly better than Bubble sort for large amounts of data
 void shaker(std::vector<int> * data){
     bool sorted = false;
     int max = data->size();
@@ -168,6 +207,11 @@ void shaker(std::vector<int> * data){
     if (!isSorted(data)) std::cout << "FAIL SHAKER" << std::endl;
 }
 
+// Selection sort algorithm -- O(n^2)
+// Linearly seach through the data to find the smallest element.
+// Then search the data for the second smallest element, etc.
+// Continually put the next smallest element on the front of the 
+// unsorted elements until it is sorted.
 void selection(std::vector<int> * data){
     int next = 0;
     while(next < data->size() - 1){
@@ -182,6 +226,9 @@ void selection(std::vector<int> * data){
     if (!isSorted(data)) std::cout << "FAIL SELECTION" << std::endl;
 }
 
+// Heapsort algorithm -- O(nlogn)
+// Insert the elements into a heap one by one and then extract them
+// one by one. Here a heap is implemented using std::priority_queue
 void heap(std::vector<int> * data){
     std::priority_queue<int> * pq = new std::priority_queue<int> ();
     for(int i = 0; i < data->size(); i++) pq->push(data->at(i));

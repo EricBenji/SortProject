@@ -11,8 +11,13 @@
 #include <chrono>
 #include <ratio>
 
+// Begins a timer
 void start_timer();
+
+// Returns the number of ms passed since timer started
 int ms_passed();
+
+// Returns the number of seconds since timer started
 double end_timer();
 
 #endif // TIME_H
