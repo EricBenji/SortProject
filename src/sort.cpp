@@ -3,6 +3,15 @@
 int time_out = ~(1 << 31);
 bool over_time = false;
 
+bool isSorted(std::vector<int> * data){
+    for(int i = 0; i < data->size() - 1; i++)
+        if (data->at(i) > data->at(i+1)) {
+            //for(int j = 0; j < data->size(); j++) std::cout << data->at(j) << " " << std::endl;
+            return false;
+        }
+    return true;
+}
+
 int set_time_out(int ms){
     time_out = ms;
 }
@@ -38,35 +47,45 @@ void merge(std::vector<int> * data, int begin, int size){
 void merge(std::vector<int> * data){
     over_time = false;
     merge(data,0,data->size());
+    if (!isSorted(data)) std::cout << "FAIL MERGE" << std::endl;
 }
 
-void quick(std::vector<int> * data, int pivot){
-    if(data->size() < MIN_QUICK_SORT_SIZE){
-        selection(data);
+void quick(std::vector<int> * data, int begin, int size){
+    if(size == 0) return;
+    if(size == 1) return;
+    /*if(size < MIN_QUICK_SORT_SIZE){
+        std::vector<int> * v = new std::vector<int> ();
+        for(int i = begin; i < begin + size; i++)
+            v->push_back(data->at(i));
+        selection(v);
+        for(int i = begin; i < begin + size; i++) 
+            data->at(i) = v->at(i - begin);
+        delete v;
         return;
+    }*/
+    int pivot = (begin + (rand() % size));
+    pivot = data->at(pivot);
+    int low = begin;
+    int high = begin + size - 1;
+    while (low < high) {
+        while( low < high && data->at(low) < pivot)
+            low++;
+        while( low < high && data->at(high) >= pivot)
+            high--;
+        if (low < high){
+            int temp = data->at(low);
+            data->at(low) = data->at(high);
+            data->at(high) = temp;
+        }
     }
-    std::vector<int> * small = new std::vector<int> ();
-    std::vector<int> * large = new std::vector<int> ();
-    for(int i = 0; i < data->size(); i++){
-        if(data->at(i) < pivot) small->push_back(data->at(i));
-        else large->push_back(data->at(i));
-    }
-    if(small->size() > 0)
-        quick(small, small->at(rand() % small->size()));
-    if(large->size() > 0)
-        quick(large, large->at(rand() % large->size()));
-    for(int i = 0; i < small->size(); i++)
-        data->at(i) = small->at(i);
-    for(int j = 0; j < large->size(); j++)
-        data->at(small->size() + j) = large->at(j);
-    delete small;
-    delete large;
+    quick(data, begin, low - begin);
+    quick(data, low, begin + size - low);
 }
 
 void quick(std::vector<int> * data){
     over_time = false;
-    int p = rand() % data->size();
-    quick(data,data->at(p));
+    quick(data,0,data->size());
+    if (!isSorted(data)) std::cout << "FAIL QUICK" << std::endl;
 }
 
 int num_digits(int in){
@@ -100,6 +119,7 @@ void radix(std::vector<int> * data){
             delete bucket[i];
         }
     }
+    if (!isSorted(data)) std::cout << "FAIL RADIX" << std::endl;
 }
 
 void bubble(std::vector<int> * data){
@@ -117,6 +137,7 @@ void bubble(std::vector<int> * data){
         }
         max--;
     }
+    if (!isSorted(data)) std::cout << "FAIL BUBBLE" << std::endl;
 }
 
 void shaker(std::vector<int> * data){
@@ -144,6 +165,7 @@ void shaker(std::vector<int> * data){
         }
         min++;
     }
+    if (!isSorted(data)) std::cout << "FAIL SHAKER" << std::endl;
 }
 
 void selection(std::vector<int> * data){
@@ -157,6 +179,7 @@ void selection(std::vector<int> * data){
         data->at(next) = temp;
         next++;
     }
+    if (!isSorted(data)) std::cout << "FAIL SELECTION" << std::endl;
 }
 
 void heap(std::vector<int> * data){
@@ -167,6 +190,7 @@ void heap(std::vector<int> * data){
         pq->pop();
         data->at(i) = curr;
     }
+    if (!isSorted(data)) std::cout << "FAIL HEAP" << std::endl;
 }
 
 
